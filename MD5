@@ -1,0 +1,16 @@
+f8acf6470109c4638299eb641408b287 *DESCRIPTION
+bcc65833d149bbd8674476fba24e2ef4 *NAMESPACE
+36b28f47e90839f19fbf8968f9a0e148 *R/Equalden.HDpackage.R
+877c2c242f7d70389d97dc3637ba9f79 *R/Equalden.test.HD.R
+060c03bf5887378b60c8a254b59db3b4 *R/Hedenfalk.R
+95a6b3844b5d2ca3b9efcef1cad34150 *R/Rat.R
+74ce26e665bb069dd86d227993f805b0 *R/zzz.R
+81d0fc43b88816e5f5fa9e3c276c17b3 *data/Hedenfalk.rda
+90bb7980dabe764a9f0010f58884b7b4 *data/Rat.rda
+6bc33d5b93364f528250bc09699d9503 *man/Equalden.HD-package.Rd
+8e8c2b5660c94eca203931af1201fc28 *man/Equalden.test.HD.Rd
+e5238386cf120a42d540f125cf6dccd4 *man/Hedenfalk.Rd
+446ade6fea3c1191a133d5d0c2b0505c *man/Rat.Rd
+97d88602e4387acc698273d8c6377878 *src/Equalden.HD_init.c
+14d00431e9067813b4dddac7af43a553 *src/utilities.c
+f21eaaed18e12d85d85ac829f267cff5 *src/utilities.h
