@@ -21,6 +21,7 @@ A list containing the following components:
 \item{k: }{number of samples or populations.}
 \item{n: }{sample size.}
 \item{method: }{a character string indicating what k-test was performed.}
+\item{I.statistics: }{the k individual statistics.}
 \item{data.name: }{a character string giving the name of the data.}
 }
 \description{
@@ -48,6 +49,10 @@ but the "dep.spect" test tends to be computationally more efficient than the "de
 Rocha et al. (2018) showed through simulations that, for independent samples, the tests "dep.boot" and
 "dep.spect" may be more powerful than the test in Zhan and Hart (2012) despite of being protected
 against possible dependences.
+On the other hand, the statistic can be written as a sum of k individual statistics, each of them
+measures the difference between the intra-sample variability of the corresponding variable and the inter-
+samples variability. Whether the null hypothesis is rejected, an exploratory analysis of such individual
+statistics can help to guess which genes are not equally distributed.
 }
 \examples{
 \dontshow{
@@ -56,6 +61,7 @@ k <- 100
 set.seed(1234)
 X <- matrix(rnorm(n * k), ncol = 2)
 res <- Equalden.test.HD(X,  method = "indep")
+res
 
 ### The statistic and the variance estimator
 res$statistic
@@ -68,6 +74,7 @@ set.seed(1234)
 X <- matrix(rnorm(n * k), ncol = 2)
 res <- Equalden.test.HD(X,  method = "indep")
 
+res
 ### The statistic and the variance estimator
 res$statistic
 res$variance
@@ -85,11 +92,27 @@ k <- dim(X)[1]
 ### We eliminate the additive patients effects by substracting to each column its sample mean.
 BRCA2 <- sweep(X[, 8:15], 2, apply(X[, 8:15], 2, mean))
 set.seed (1234)
-k <- sample(1:k, 1000)
-res1 <- Equalden.test.HD(BRCA2[k, ], method = "dep.boot")
+se<-1000
+ind <- sample(1:k, se)
+res1 <- Equalden.test.HD(BRCA2[ind, ], method = "dep.boot")
 res1
-res2 <- Equalden.test.HD(BRCA2[k, ], method = "dep.spect")
+res2 <- Equalden.test.HD(BRCA2[ind, ], method = "dep.spect")
 res2
+### The null hypothesis is rejected using both methods. Then we plot the individual statistics
+### and highlight the 100 most extreme values.
+cu <- 100
+I.statistics.sorted <- sort(res1$I.statistics)
+cv <- I.statistics.sorted[se-cu+1]
+ind2 <- which(res1$I.statistics >= cv)
+plot(1:se, res1$I.statistics, xlim = c(0, se), ylim = c(min(res1$I.statistics),
+                                                        max(res1$I.statistics)),
+     xlab = "Genes", ylab = "statistic", main = "Individual statistics")
+points(ind2, res1$I.statistics[ind2], col = "red")
+### We zoom the plot in the following way since some individual statistics report extreme
+### negative values in this data.
+plot(1:se, res1$I.statistics, xlim = c(0, se), ylim = c(0, max(res1$I.statistics)),
+     xlab = "Genes", ylab = "statistic", main = "Individual statistics")
+points(ind2, res1$I.statistics[ind2], col = "red")
 }
 }
 \references{

@@ -31,6 +31,10 @@
 #' Rocha et al. (2018) showed through simulations that, for independent samples, the tests "dep.boot" and
 #' "dep.spect" may be more powerful than the test in Zhan and Hart (2012) despite of being protected
 #' against possible dependences.
+#' On the other hand, the statistic can be written as a sum of k individual statistics, each of them
+#' measures the difference between the intra-sample variability of the corresponding variable and the inter-
+#' samples variability. Whether the null hypothesis is rejected, an exploratory analysis of such individual
+#' statistics can help to guess which genes are not equally distributed.
 #'
 #' @return A list containing the following components:
 #' \item{standarized statistic: }{the value of the standarized statistic.}
@@ -41,6 +45,7 @@
 #' \item{k: }{number of samples or populations.}
 #' \item{n: }{sample size.}
 #' \item{method: }{a character string indicating what k-test was performed.}
+#' \item{I.statistics: }{the k individual statistics.}
 #' \item{data.name: }{a character string giving the name of the data.}
 #'
 #'
@@ -65,6 +70,7 @@
 #' set.seed(1234)
 #' X <- matrix(rnorm(n * k), ncol = 2)
 #' res <- Equalden.test.HD(X,  method = "indep")
+#' res
 #'
 #' ### The statistic and the variance estimator
 #' res$statistic
@@ -77,6 +83,7 @@
 #' X <- matrix(rnorm(n * k), ncol = 2)
 #' res <- Equalden.test.HD(X,  method = "indep")
 #'
+#' res
 #' ### The statistic and the variance estimator
 #' res$statistic
 #' res$variance
@@ -94,27 +101,43 @@
 #' ### We eliminate the additive patients effects by substracting to each column its sample mean.
 #' BRCA2 <- sweep(X[, 8:15], 2, apply(X[, 8:15], 2, mean))
 #' set.seed (1234)
-#' k <- sample(1:k, 1000)
-#' res1 <- Equalden.test.HD(BRCA2[k, ], method = "dep.boot")
+#' se<-1000
+#' ind <- sample(1:k, se)
+#' res1 <- Equalden.test.HD(BRCA2[ind, ], method = "dep.boot")
 #' res1
-#' res2 <- Equalden.test.HD(BRCA2[k, ], method = "dep.spect")
+#' res2 <- Equalden.test.HD(BRCA2[ind, ], method = "dep.spect")
 #' res2
+#' ### The null hypothesis is rejected using both methods. Then we plot the individual statistics
+#' ### and highlight the 100 most extreme values.
+#' cu <- 100
+#' I.statistics.sorted <- sort(res1$I.statistics)
+#' cv <- I.statistics.sorted[se-cu+1]
+#' ind2 <- which(res1$I.statistics >= cv)
+#' plot(1:se, res1$I.statistics, xlim = c(0, se), ylim = c(min(res1$I.statistics),
+#'                                                         max(res1$I.statistics)),
+#'      xlab = "Genes", ylab = "statistic", main = "Individual statistics")
+#' points(ind2, res1$I.statistics[ind2], col = "red")
+#' ### We zoom the plot in the following way since some individual statistics report extreme
+#' ### negative values in this data.
+#' plot(1:se, res1$I.statistics, xlim = c(0, se), ylim = c(0, max(res1$I.statistics)),
+#'      xlab = "Genes", ylab = "statistic", main = "Individual statistics")
+#' points(ind2, res1$I.statistics[ind2], col = "red")
 #' }
-#' @useDynLib Equalden.HD, .registration=TRUE
+#' @importFrom  stats var
+#' @useDynLib Equalden.HD, .registration = TRUE
 #' @export
-Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
+Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
   cat("Call:", "\n")
   print(match.call())
+  if(missing(method)) {
+    method <- "dep.spect"
+    cat("'dep.spect' method used by default")
+  }
   method <- match.arg(method)
   DNAME <- deparse(substitute(X))
   METHOD <- "A test for the equality of a high dimensional set of densities"
 
   match.arg(method)
-
-  if(missing(method)) {
-    method <- "dep.spect"
-    cat("'dep.spect' method used by default")
-  }
 
   h1 <- function(X, h) {
     p <- nrow(X)
@@ -277,14 +300,12 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
     ## values of rho(k+j), j=1,...,kn are all insignificant, take the
     ## smallest rho(k) such that this holds (see footnote c of
     ## Politis and White for further details).
-    if(any(num.ins == kn))
-      return( which(num.ins == kn)[1] )
-    else
-    {
+    if(any(num.ins == kn)) {
+      return(which(num.ins == kn)[1])
+    } else {
       ## If no runs of length kn are insignificant, take the smallest
       ## value of rho(k) that is significant.
-      if(any(abs(rho) > rho.crit))
-      {
+      if(any(abs(rho) > rho.crit)) {
         lag.sig <- which(abs(rho) > rho.crit)
         k.sig <- length(lag.sig)
 
@@ -350,7 +371,7 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
       var <- var + hseudo[j] * hseudo[j]
     }
 
-    return((1/p)*var)
+    return((1 / p) * var)
   }
 
   statistic <- function(c, hseudo) {
@@ -389,7 +410,9 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
   if(n < 2){
     stop("Number of columns must be at least 2.")
   }
+
   p <- nrow(X)
+
   if(p < 2){
     stop("Number of rows must be at least 2.")
   }
@@ -455,6 +478,73 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
   ### Then we compute the p-value using the asymptotic normality.
   pvalor3 <- 1 - stats::pnorm(unlist(s))
 
+
+  #=============================================================================
+  # I.statistics
+  #=============================================================================
+
+  h1 <- function(X, h) {
+    p <- nrow(X)
+    n <- ncol(X)
+    Del <- X[, 1] - X[, 2:n]
+    if (n > 2) {
+      for (j in 2:(n - 1)) {
+        Del <- cbind(Del, X[, j] - X[, (j + 1):n]) # we have to duplicated comparisons for this reason
+        # in ans we multiply for 2.
+      }
+    }
+    Del <- stats::dnorm(Del, sd = sqrt(2) * h)
+    One <- matrix(1, n * (n - 1) / 2, 1) # n*(n-1)/2 n?mero de comparaci?ns sen contar as duplicadas.
+    ans <- 2 * Del %*% One # we do the summation of the subscript j.
+    ans <- ans / (n * (n - 1))
+    as.vector(ans)
+  }
+
+  ### Function to compute the function h2 in (1), more precisely, for each this
+  ### function reports (1/(p-1))*\sum_{k=1,k\not=i} h_2(X_i,Xk).
+
+
+  h3hat <- function(X, i, h) {
+    p <- nrow(X)
+    n <- ncol(X)
+    Del <- rep(X[i, 1], len = p) - X # X_i1-x_kl para todo k,l.
+    for (j in 2:n) {
+      Del <- cbind(Del, rep(X[i, j], len = p) - X)
+    }
+    Del <- Del[(1:p)[(1:p) != i], ] # sacamos as diferencias k=i.
+    Del <- stats::dnorm(Del, sd = sqrt(2) * h)
+    sum(Del) / (n ^ 2 * (p - 1))
+  }
+
+
+  ### Using the previous function, the next function computes the statistic S
+
+
+  teststat <- function(h, X) {
+    p <- nrow(X)
+    n <- ncol(X)
+    h1vec <- 1:p
+    h3est <- rep(0, len = p)
+    h1vec <- h1(X, h)
+    for (j in 1:p) {
+      h3est[j] <- h3hat(X, j, h)
+    }
+    SW <- (h1vec)
+    SB <- (h3est)
+    list(SW - SB)
+  }
+
+  c1 <- 1 / p
+  c2 <- 1.144 * n ^ (-1 / 5)
+  si <- apply(X, 1, var)
+  spool <- sqrt(c1 * sum(si))
+  h <- spool * c2
+
+
+  stats_ind <- teststat(h, X) # I.statistics is equal to stats_ind
+
+
+
   statistic <- switch(method, dep.boot = eso, dep.spect = esa, indep = unlist(s))
   names(statistic) <- "standarized statistic"
 
@@ -473,7 +563,7 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")){
 
   RVAL2 <- list(standarized.statistic = statistic2, p.value = p.value,
                 statistic = e, variance = variance, m = m, k = p,
-                n = n, method = met, data.name = DNAME)
+                n = n, method = met, data.name = DNAME, I.statistics = unlist(stats_ind))
   class(RVAL) <- "htest"
 
   print(RVAL)

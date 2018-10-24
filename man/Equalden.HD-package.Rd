@@ -27,11 +27,29 @@ Documentation for package ‘Equalden.HD’ version 1.0
 
 \itemize{
 \item{Package: Equalden.HD}
-\item{Version: 1.0}
+\item{Version: 1.1}
 \item{Maintainer: Marta Cousido Rocha \email{martacousido@uvigo.es}}
 \item{License: GPL-2}
 }
 }
+\section{Acknowledgements}{
+
+This work has received financial support of the Call 2015 Grants for
+PhD contracts for training of doctors of the Ministry of Economy and Competitiveness,
+co-financed by the European Social Fund (Ref. BES-2015-074958).
+The authors acknowledge support from  MTM2014-55966-P project, Ministry of Economy and
+Competitiveness, and MTM2017-89422-P project, Ministry of Economy, Industry
+and Competitiveness, State Research Agency, and Regional Development Fund, UE.
+The authors also acknowledge the financial support provided by the SiDOR research group
+through the grant Competitive Reference Group, 2016-2019 (ED431C 2016/040),
+funded by the ``Consellería de Cultura, Educación e Ordenación Universitaria.
+Xunta de Galicia''. José Carlos Soage was supported by Red Tecnológica de
+Matemática Industrial (Red TMATI), Cons. de Cultura, Educación e OU, Xunta de Galicia
+(ED341D R2016/051) and by Grupos de Referencia Competitiva, Consolidación y
+Estructuración de Unidades de Investigación Competitivas del SUG, Cons. de Cultura,
+Educación e OU, Xunta de Galicia (GRC ED431C 2016/040).
+}
+
 \references{
 \itemize{
 \item{Cousido-Rocha, M., de Uña-Álvarez, J., and Hart, J.(2018). Testing equality of a large number of densities under mixing conditions. Preprint.}

@@ -1,7 +1,7 @@
 #' Hedenfalk data
 #'
 #' These data come from the breast cancer gene expression study of Hedenfalk et al. (2001). The data set
-#' consists on 3226 logged gene expression levels measured on 7 patients with breast tumors having BRCA1
+#' consists on 3226 gene expression levels measured on 7 patients with breast tumors having BRCA1
 #' mutations (columns 1-7) and on 8 patients with breast tumors having BRCA2 mutations (columns 8-15).
 #' The rows correspond to the genes and the columns refer to the patients.
 #'
