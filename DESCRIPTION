@@ -1,6 +1,6 @@
 Package: Equalden.HD
 Title: Testing the Equality of a High Dimensional Set of Densities
-Version: 1.1
+Version: 1.2
 Authors@R: c(
   person("Marta", "Cousido Rocha", email = "martacousido@uvigo.es", role = c("aut", "cre")),
   person("José Carlos", "Soage González", email = "jsoage@uvigo.es", role = "ctr"),
@@ -17,9 +17,9 @@ ByteCompile: true
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2018-10-24 08:21:23 UTC; JoseCarlos
+Packaged: 2019-03-11 08:24:16 UTC; JoseCarlos
 Author: Marta Cousido Rocha [aut, cre],
   José Carlos Soage González [ctr],
   Jacobo de Uña Álvarez [aut, ths],
@@ -29,4 +29,4 @@ Author: Marta Cousido Rocha [aut, cre],
   C. Parmeter [cph],
   J. Racine [cph]
 Repository: CRAN
-Date/Publication: 2018-10-24 09:10:03 UTC
+Date/Publication: 2019-03-11 08:42:54 UTC

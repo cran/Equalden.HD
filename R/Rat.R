@@ -11,7 +11,7 @@
 #' @references
 #'
 #' Davidson, L.A., Nguyen, D.V., Hokanson, R.M., Callaway, E.S., Isett, R.B., Turner, N.D., Dougherty, E.R., Wang, N., Lupton, J.R., Carroll, R.J., and Chapkin, R.S. (2004). Chemopreventive n-3
-#' polyunsaturated fatty acids reprogram genetic signatures during colon cancer initiation and progression in the rat. Cancer Research, 64, 6797–6804.
+#' polyunsaturated fatty acids reprogram genetic signatures during colon cancer initiation and progression in the rat. Cancer Research, 64, 6797-6804.
 #'
 #' @examples
 #' \dontshow{

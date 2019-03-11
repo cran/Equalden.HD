@@ -2,4 +2,6 @@
 
 export(Equalden.test.HD)
 importFrom(stats,var)
+importFrom(utils,setTxtProgressBar)
+importFrom(utils,txtProgressBar)
 useDynLib(Equalden.HD, .registration = TRUE)

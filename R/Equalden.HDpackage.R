@@ -1,6 +1,5 @@
-#' Package ‘Equalden.HD’
+#' @title Package Equalden.HD
 #'
-#' Documentation for package ‘Equalden.HD’ version 1.0
 #'
 #' @description
 #' This package implements three different methods to test the null hypothesis that a large number k of
@@ -15,14 +14,14 @@
 #' @details
 #' \itemize{
 #' \item{Package: Equalden.HD}
-#' \item{Version: 1.1}
+#' \item{Version: 1.2}
 #' \item{Maintainer: Marta Cousido Rocha \email{martacousido@@uvigo.es}}
 #' \item{License: GPL-2}
 #' }
 #'
 #' @return
 #' \itemize{
-#' \item{Equalden.test.HD: Performs the k-sample test proposed in Zhan and Hart (2012) for the setting of low sample size, large
+#' \item{\link{Equalden.test.HD}: Performs the k-sample test proposed in Zhan and Hart (2012) for the setting of low sample size, large
 #' dimension and independent samples, and its adaptions to dependent samples proposed in Cousido-Rocha
 #' et. al (2018).}
 #' }

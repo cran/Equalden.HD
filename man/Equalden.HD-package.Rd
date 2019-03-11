@@ -4,10 +4,10 @@
 \name{Equalden.HD-package}
 \alias{Equalden.HD}
 \alias{Equalden.HD-package}
-\title{Package ‘Equalden.HD’}
+\title{Package Equalden.HD}
 \value{
 \itemize{
-\item{Equalden.test.HD: Performs the k-sample test proposed in Zhan and Hart (2012) for the setting of low sample size, large
+\item{\link{Equalden.test.HD}: Performs the k-sample test proposed in Zhan and Hart (2012) for the setting of low sample size, large
 dimension and independent samples, and its adaptions to dependent samples proposed in Cousido-Rocha
 et. al (2018).}
 }
@@ -22,12 +22,9 @@ and Hart (2012) for the setting in which the samples are weakly dependent. The s
 each test statistic and its p-value are computed among other things.
 }
 \details{
-Documentation for package ‘Equalden.HD’ version 1.0
-
-
 \itemize{
 \item{Package: Equalden.HD}
-\item{Version: 1.1}
+\item{Version: 1.2}
 \item{Maintainer: Marta Cousido Rocha \email{martacousido@uvigo.es}}
 \item{License: GPL-2}
 }

@@ -20,10 +20,10 @@
 #' is based on a comparison between the k sample-specific kernel density estimates and the kernel density
 #' estimate computed from the pooled sample. An alternative expression of this statistic shows that it can
 #' be interpreted as a difference between the intra-samples variability and the inter-samples variability.
-#' This statistic is standarized using a variance estimator which is valid for independent samples. The asymptotic
+#' This statistic is standardized using a variance estimator which is valid for independent samples. The asymptotic
 #' normality (when k tends to infinity) of the standardized version of the statistic is used to compute the
 #' corresponding p-value. Cousido-Rocha et al. (2018) proposed two corrections of the test of Zhan and
-#' Hart (2012) for dependent samples. These tests standarize the statistic proposed in Zhan and Hart (2012)
+#' Hart (2012) for dependent samples. These tests standardize the statistic proposed in Zhan and Hart (2012)
 #' by using variance estimators which are suitable when the samples are weakly dependent. The method
 #' "dep.boot" implements the dependent multiplier bootstrap to estimate the variance, whereas the method
 #' "dep.spect" uses a variance estimator based on the spectral analysis theory. Both tests perform similarly,
@@ -37,7 +37,7 @@
 #' statistics can help to guess which genes are not equally distributed.
 #'
 #' @return A list containing the following components:
-#' \item{standarized statistic: }{the value of the standarized statistic.}
+#' \item{standardized statistic: }{the value of the standardized statistic.}
 #' \item{p.value: }{the p-value for the test.}
 #' \item{statistic: }{the value of the statistic.}
 #' \item{variance: }{the value of the variance estimator.}
@@ -124,15 +124,19 @@
 #' points(ind2, res1$I.statistics[ind2], col = "red")
 #' }
 #' @importFrom  stats var
+#' @importFrom  utils setTxtProgressBar txtProgressBar
 #' @useDynLib Equalden.HD, .registration = TRUE
 #' @export
 Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
+
   cat("Call:", "\n")
   print(match.call())
+
   if(missing(method)) {
     method <- "dep.spect"
     cat("'dep.spect' method used by default")
   }
+
   method <- match.arg(method)
   DNAME <- deparse(substitute(X))
   METHOD <- "A test for the equality of a high dimensional set of densities"
@@ -224,7 +228,7 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
 
     ## Compute gamma.n
     gamma.n <- as.numeric(stats::ccf(influ, influ, lag.max = L,
-                              type = "covariance", plot = FALSE)$acf)
+                                     type = "covariance", plot = FALSE)$acf)
 
     sqrderiv <- switch(weights,
                        bartlett = 143.9977845,
@@ -341,7 +345,7 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
 
     for (i in 1:d) {
       rho <- stats::acf(x[, i], lag.max = lagmax, type = "correlation",
-                 plot = FALSE)$acf[-1]
+                        plot = FALSE)$acf[-1]
       m[i] <- mval(rho, lagmax, kn, rho.crit)
     }
     return(2 * method(m))
@@ -392,8 +396,9 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
     h1vec <- 1:p
     h3est <- rep(0, len = p)
     h1vec <- h1(X, h)
-
+    pb <- txtProgressBar(min = 0, max = p, style = 3)
     for (j in 1:p) {
+      setTxtProgressBar(pb, j)
       h3est[j] <- h3hat(X, j, h)
     }
 
@@ -432,6 +437,8 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
   ### The next line computes the statistic S
   e <- unlist(teststat(h, X))
 
+  if(method == "dep.boot"){
+
   ### The next lines computes the pseudo-observations, the parameter
   ### \widehat{l}_p^{opt} and the variance estimator, equation (20).
   hseudo <- hseu(X, h, e)
@@ -439,45 +446,52 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
   ln_opt <- bOptU(hseudo)
   sigma <- sigmaf(hseudo, ln_opt)
 
-  ### Then we compute S_p, the standarized version of our test statistic
+  ### Then we compute S_p, the standardized version of our test statistic
   eso <- (sqrt(p) * (e)) / (2 * sqrt((sigma)))
 
   ### Then we compute the p-value using the asymptotic normality.
   pvalor1 <- 1 - stats::pnorm(eso)
-
+  }
 
   #=============================================================================
   # \tilde{S}_p
   #=============================================================================
 
-  ### The next line computes the value of the parameter m, which is assumed
-  ### equal to L_p in the expression of \widehat{l}_p^{opt}
-  m <- Lval(hseudo, method = min)
+  if(method == "dep.spect"){
 
-  ### The next lines computes the estimator of the covariance function in (22)
-  c <- covariance(hseudo, m)
-  ### Then, we compute the variance estimator in (22).
-  sigma2 <- statistic(c, hseudo)
+    ### The next lines computes the pseudo-observations, the parameter
+    ### \widehat{l}_p^{opt} and the variance estimator, equation (20).
+    hseudo <- hseu(X, h, e)
 
-  ### Then we compute S_p, the standarized version of our test statistic
-  esa <- (sqrt(p) * (e)) / (2 * sqrt((sigma2)))
+    ### The next line computes the value of the parameter m, which is assumed
+    ### equal to L_p in the expression of \widehat{l}_p^{opt}
+    m <- Lval(hseudo, method = min)
 
-  ### Then we compute the p-value using the asymptotic normality.
-  pvalor2 <- 1 - stats::pnorm(esa)
+    ### The next lines computes the estimator of the covariance function in (22)
+    c <- covariance(hseudo, m)
+    ### Then, we compute the variance estimator in (22).
+    sigma2 <- statistic(c, hseudo)
 
+    ### Then we compute S_p, the standardized version of our test statistic
+    esa <- (sqrt(p) * (e)) / (2 * sqrt((sigma2)))
+
+    ### Then we compute the p-value using the asymptotic normality.
+    pvalor2 <- 1 - stats::pnorm(esa)
+}
 
   #=============================================================================
   # ZH test
   #=============================================================================
+  if(method == "indep"){
 
-  ### The next line computes the standarized version of ZH test.
-  a <- teststat2(h, X)
-  s <- a[1]
-  sig2 <- a$sig2
+    ### The next line computes the standardized version of ZH test.
+    a <- teststat2(h, X)
+    s <- a[1]
+    sig2 <- a$sig2
 
-  ### Then we compute the p-value using the asymptotic normality.
-  pvalor3 <- 1 - stats::pnorm(unlist(s))
-
+    ### Then we compute the p-value using the asymptotic normality.
+    pvalor3 <- 1 - stats::pnorm(unlist(s))
+  }
 
   #=============================================================================
   # I.statistics
@@ -544,24 +558,56 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
   stats_ind <- teststat(h, X) # I.statistics is equal to stats_ind
 
 
+  if(method == "indep"){
+    statistic <- unlist(s)
+    statistic2 <- unlist(s)
+    p.value <- pvalor3
+    met <- "indep"
+    variance <- sig2
+    m <- NULL
+    e <- e
+  }
 
-  statistic <- switch(method, dep.boot = eso, dep.spect = esa, indep = unlist(s))
-  names(statistic) <- "standarized statistic"
+  if(method == "dep.boot"){
+    statistic <- eso
+    statistic2 <- eso
+    p.value <- pvalor1
+    met <- "dep.boot"
+    variance <- sigma
+    m <- ln_opt
+    e <- e
+  }
 
-  statistic2 <- switch(method, dep.boot = eso, dep.spect = esa, indep = unlist(s))
+  if(method == "dep.spect"){
+    statistic <- esa
+    statistic2 <- esa
+    p.value <- pvalor2
+    met <- "dep.spect"
+    variance <- sigma2
+    m <- m
+    e <- e
+  }
 
-  p.value <- switch(method, dep.boot = pvalor1, dep.spect = pvalor2, indep = pvalor3)
 
-  met <- switch(method, dep.boot = "dep.boot", dep.spect = "dep.spect", indep = "indep")
+  # statistic <- switch(method, dep.boot = eso, dep.spect = esa, indep = unlist(s))
+  names(statistic) <- "standardized statistic"
 
-  variance <- switch(method, dep.boot = sigma, dep.spect = sigma2, indep = sig2)
+  # statistic2 <- switch(method, dep.boot = eso, dep.spect = esa, indep = unlist(s))
 
-  m <- switch(method, dep.boot = ln_opt, dep.spect = m, indep = NULL)
+  # p.value <- switch(method, dep.boot = pvalor1, dep.spect = pvalor2, indep = pvalor3)
+  #
+  # met <- switch(method, dep.boot = "dep.boot", dep.spect = "dep.spect", indep = "indep")
+  #
+  # variance <- switch(method, dep.boot = sigma, dep.spect = sigma2, indep = sig2)
+  #
+  # m <- switch(method, dep.boot = ln_opt, dep.spect = m, indep = NULL)
+  #
+  # e <- switch(method, dep.boot = e, dep.spect = e, indep = e)
 
   RVAL <- list(statistic = statistic, p.value = p.value, method = METHOD,
                data.name = DNAME, sample.size = n, method1 = met)
 
-  RVAL2 <- list(standarized.statistic = statistic2, p.value = p.value,
+  RVAL2 <- list(standardized.statistic = statistic2, p.value = p.value,
                 statistic = e, variance = variance, m = m, k = p,
                 n = n, method = met, data.name = DNAME, I.statistics = unlist(stats_ind))
   class(RVAL) <- "htest"
@@ -570,3 +616,12 @@ Equalden.test.HD <- function(X, method = c("indep", "dep.boot", "dep.spect")) {
   return(invisible(RVAL2))
 }
 
+
+
+
+
+# n <- 5
+# k <- 2000
+# set.seed(1234)
+# X <- matrix(rnorm(n * k), ncol = 2)
+# system.time(res <- Equalden.test.HD(X,  method = "indep"))

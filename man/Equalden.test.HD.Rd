@@ -13,7 +13,7 @@ Equalden.test.HD(X, method = c("indep", "dep.boot", "dep.spect"))
 }
 \value{
 A list containing the following components:
-\item{standarized statistic: }{the value of the standarized statistic.}
+\item{standardized statistic: }{the value of the standardized statistic.}
 \item{p.value: }{the p-value for the test.}
 \item{statistic: }{the value of the statistic.}
 \item{variance: }{the value of the variance estimator.}
@@ -38,10 +38,10 @@ of samples k is large, and it works for sample sizes as small as 2. The statisti
 is based on a comparison between the k sample-specific kernel density estimates and the kernel density
 estimate computed from the pooled sample. An alternative expression of this statistic shows that it can
 be interpreted as a difference between the intra-samples variability and the inter-samples variability.
-This statistic is standarized using a variance estimator which is valid for independent samples. The asymptotic
+This statistic is standardized using a variance estimator which is valid for independent samples. The asymptotic
 normality (when k tends to infinity) of the standardized version of the statistic is used to compute the
 corresponding p-value. Cousido-Rocha et al. (2018) proposed two corrections of the test of Zhan and
-Hart (2012) for dependent samples. These tests standarize the statistic proposed in Zhan and Hart (2012)
+Hart (2012) for dependent samples. These tests standardize the statistic proposed in Zhan and Hart (2012)
 by using variance estimators which are suitable when the samples are weakly dependent. The method
 "dep.boot" implements the dependent multiplier bootstrap to estimate the variance, whereas the method
 "dep.spect" uses a variance estimator based on the spectral analysis theory. Both tests perform similarly,
