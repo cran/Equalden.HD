@@ -4,7 +4,9 @@
 \name{Rat}
 \alias{Rat}
 \title{Rat data}
-\format{A matrix with 8038 rows corresponding to the measured genes and 5 columns corresponding to the rats.}
+\format{
+A matrix with 8038 rows corresponding to the measured genes and 5 columns corresponding to the rats.
+}
 \usage{
 data(Rat)
 }

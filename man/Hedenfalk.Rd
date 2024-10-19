@@ -4,11 +4,10 @@
 \name{Hedenfalk}
 \alias{Hedenfalk}
 \title{Hedenfalk data}
-\format{A matrix with 3226 rows corresponding to the measured genes and 15 columns corresponding to the
+\format{
+A matrix with 3226 rows corresponding to the measured genes and 15 columns corresponding to the
 patients. The first 7 columns contain the measures for the patients with BRCA1 mutations and the
-patients with BRCA2 mutations are located in the last 8 columns.}
-\source{
-\url{http://genomine.org/qvalue/results.txt}
+patients with BRCA2 mutations are located in the last 8 columns.
 }
 \usage{
 data(Hedenfalk)

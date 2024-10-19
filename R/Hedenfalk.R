@@ -12,7 +12,6 @@
 #' patients with BRCA2 mutations are located in the last 8 columns.
 #'
 #'
-#' @source \url{http://genomine.org/qvalue/results.txt}
 #'
 #' @references
 #'
